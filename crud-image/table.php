@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +11,6 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </head>
-
 <body>
     <div class="container mt-4 p-5 shadow rounded-3">
         <!-- Button trigger modal -->
@@ -86,7 +84,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label for="price" class="form-label">Price</label>
-                                    <input id="price" type="number" step="0.1" name="price" class="form-control" placeholder="Price...">
+                                    <input id="price" type="number" step="0.01" name="price" class="form-control" placeholder="Price...">
                                 </div>
                                 <div class="mb-2">
                                     <label for="" class="form-label">Image</label> <br>
@@ -126,6 +124,7 @@
             $('#exampleModalLabel').text('Add Product')
             $('#form').attr('action','insert.php')
             $('#form').trigger('reset')
+            $('#image').attr('src','https://i.pinimg.com/736x/4c/3e/02/4c3e027d03ea726d4696eb368852a174.jpg')
         })
         $(document).on('click','#edit',function(){
             $('#save').hide()
@@ -137,7 +136,7 @@
             const pro_name=row.find('td:eq(1)').text().trim()
             const qty=row.find('td:eq(2)').text().trim()
             const price=row.find('td:eq(3)').text().trim().slice(1)
-            const image=$('#img').attr('src')
+            const image=row.find('img').attr('src')
             console.log(price);
             
             $('#id').val(id)
@@ -145,9 +144,7 @@
             $('#qty').val(qty)
             $('#price').val(price)
             $('#image').attr('src',image)
-            
-            
-            
+         
         })
     })
 </script>
