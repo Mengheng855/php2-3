@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>`
+    <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -15,7 +14,7 @@
 <body>
     <div class="container mt-5 p-4 shadow rounded-3">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-dark float-end mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id="add" class="btn btn-outline-dark float-end mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
             +Add Student
         </button>
         <table class="table table-hover text-center">
@@ -45,14 +44,13 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-outline-danger">Delete</button>
-                                    <button class="btn btn-outline-warning">Edot</button>
+                                    <button id="edit" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                                 </td>
                             </tr>
                         ';
                     }
                  ?>
             </tbody>
-
 
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -65,6 +63,7 @@
                         </div>
                         <div class="modal-body">
                             <form id="form" action="" method="post" enctype="multipart/form-data">
+                                <input type="text" name="id" id="id">
                                 <div class="mb-2">
                                     <label for="" class="form-label">Username</label>
                                     <input type="text" id="username" name="username" class="form-control" placeholder="Username...">
@@ -85,6 +84,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="button" id="save" data-bs-dismiss="modal" class="btn btn-primary">Add</button>
+                                <button type="button" id="update" data-bs-dismiss="modal" class="btn btn-success">update</button>
                             </div>
                         </form>
                     </div>
@@ -97,6 +97,11 @@
 </html>
 <script>
     $(document).ready(function(){
+        $('#add').click(function(){
+            $('#update').hide()
+            $('#save').show()
+            $('#exampleModalLabel').text('Add Student')
+        })
         $('#save').click(function(){
             const username=$('#username').val()
             const gender=$('#gender').val()
@@ -126,12 +131,54 @@
                             </td>
                             <td>
                                 <button class="btn btn-outline-danger">Delete</button>
-                                <button class="btn btn-outline-warning">Edot</button>
+                                <button class="btn btn-outline-warning">Edit</button>
                             </td>
                         </tr>
                     `);
                 }
             })
+        })
+        $(document).on('click','#edit',function(){
+            $('#update').show()
+            $('#save').hide()
+            $('#exampleModalLabel').text('Update Student')
+            const row=$(this).closest('tr')
+            const id=row.find('td:eq(0)').text().trim()
+            const name=row.find('td:eq(1)').text().trim()
+            const gender=row.find('td:eq(2)').text().trim()
+            // const profile=row.find('td:eq(3) img').attr('src');
+            $('#id').val(id)
+            $('#username').val(name)
+            $('#gender').val(gender)
+             
+            $('#update').click(function(){
+                const id=$('#id').val()
+                const username=$('#username').val()
+                const gender=$('#gender').val()
+                const file=$('#file')[0].files[0]
+                const imgurl=URL.createObjectURL(file)
+                let formdata= new FormData()
+                formdata.append('id',id)
+                formdata.append('username',username)
+                formdata.append('gender',gender)
+                formdata.append('file',file)
+                $.ajax({
+                    url:'update.php',
+                    method:'POST',
+                    data:formdata,
+                    contentType:false,
+                    processData:false,
+                    success:function(){
+                        if(row.find('td:eq(0)').text().trim()==id){
+                            row.find('td:eq(1)').text(username)
+                            row.find('td:eq(2)').text(gender)
+                            row.find('td:eq(3) img').attr('src',imgurl)
+                        }
+                    }
+                })
+            })
+           
+            
         })
     })
 </script>
