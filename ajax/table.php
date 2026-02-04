@@ -43,7 +43,7 @@
                                         height="40px" class="rounded-circle" alt="">
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-danger">Delete</button>
+                                    <button id="delete" class="btn btn-outline-danger">Delete</button>
                                     <button id="edit" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                                 </td>
                             </tr>
@@ -63,7 +63,7 @@
                         </div>
                         <div class="modal-body">
                             <form id="form" action="" method="post" enctype="multipart/form-data">
-                                <input type="text" name="id" id="id">
+                                <input type="hidden" name="id" id="id">
                                 <div class="mb-2">
                                     <label for="" class="form-label">Username</label>
                                     <input type="text" id="username" name="username" class="form-control" placeholder="Username...">
@@ -156,7 +156,7 @@
                 const username=$('#username').val()
                 const gender=$('#gender').val()
                 const file=$('#file')[0].files[0]
-                const imgurl=URL.createObjectURL(file)
+                
                 let formdata= new FormData()
                 formdata.append('id',id)
                 formdata.append('username',username)
@@ -172,13 +172,34 @@
                         if(row.find('td:eq(0)').text().trim()==id){
                             row.find('td:eq(1)').text(username)
                             row.find('td:eq(2)').text(gender)
-                            row.find('td:eq(3) img').attr('src',imgurl)
+                            if(file){
+                                const imgurl=URL.createObjectURL(file)
+                                row.find('td:eq(3) img').attr('src',imgurl)
+                            }
                         }
                     }
                 })
             })
            
             
+        })
+        $(document).on('click','#delete',function(){
+            if(!confirm("Are you sure?"))return
+            const row=$(this).closest('tr');
+            const id=row.find('td:first').text().trim()
+            console.log(id);
+            const formdata=new FormData()
+            formdata.append('id',id)
+            $.ajax({
+                url:'delete.php',
+                method:'POST',
+                data:{
+                    id
+                },
+                success:function(res){
+                    row.remove()
+                }
+            })
         })
     })
 </script>
