@@ -7,7 +7,7 @@
         $select="SELECT password,is_admin FROM tbl_user WHERE email='$email'";
         $ex=mysqli_query($conn,$select);
         $row=mysqli_fetch_assoc($ex);
-        if($password==$row['password']){
+        if(password_verify($password,$row['password'])){
             $_SESSION['is_admin']=$row['is_admin'];
             if($row['is_admin']==1){
                 header('location:../admin/dashboard.php');
